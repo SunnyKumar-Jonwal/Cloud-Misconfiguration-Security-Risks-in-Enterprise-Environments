@@ -1,0 +1,73 @@
+# Compute: instance metadata, public addresses, secrets in configuration.
+
+- id: CG-EC2-001
+  title: EC2 instance allows IMDSv1 (session tokens not required)
+  severity: high
+  category: compute
+  resource_types: [aws_instance, aws_launch_template]
+  description: With IMDSv1, a server-side request forgery (SSRF) bug in an application can read the instance role's temporary credentials from the metadata service, as in the Capital One breach.
+  when:
+    path: metadata_options.0.http_tokens
+    not_equals: required
+  remediation: Require IMDSv2 by setting http_tokens = "required" (and a hop limit of 1 unless containers need 2).
+  fix: |
+    metadata_options {
+      http_tokens                 = "required"
+      http_put_response_hop_limit = 1
+    }
+  frameworks: {nist_800_53: [AC-6, SC-7], mitre_attack: [T1552.005]}
+
+- id: CG-EC2-002
+  title: EC2 instance has a public IP address
+  severity: medium
+  category: network-exposure
+  resource_types: [aws_instance]
+  description: The instance is directly reachable from the internet. Internet-facing workloads should normally sit behind a load balancer or WAF.
+  when:
+    path: associate_public_ip_address
+    equals: true
+  remediation: Place instances in private subnets behind a load balancer; use Session Manager for administration.
+  fix: |
+    associate_public_ip_address = false
+  frameworks: {nist_800_53: [SC-7], mitre_attack: [T1190]}
+
+- id: CG-EC2-003
+  title: Secret hard-coded in instance user data
+  severity: high
+  category: secrets
+  resource_types: [aws_instance, aws_launch_template]
+  description: User data contains what looks like a password, key or token. User data is readable by anyone with ec2:DescribeInstanceAttribute and from inside the instance.
+  when:
+    secret_in: user_data
+  remediation: Fetch secrets at boot from AWS Secrets Manager or SSM Parameter Store using the instance role.
+  fix: |
+    # In user data: DB_PASSWORD=$(aws secretsmanager get-secret-value --secret-id app/db --query SecretString --output text)
+  frameworks: {nist_800_53: [IA-5, SC-28], mitre_attack: [T1552.001, T1552.005]}
+
+- id: CG-LAMBDA-001
+  title: Secret hard-coded in Lambda environment variables
+  severity: high
+  category: secrets
+  resource_types: [aws_lambda_function]
+  description: An environment variable holds a literal password, key or token, visible to anyone who can read the function configuration.
+  when:
+    secret_in: environment
+  remediation: Store the secret in Secrets Manager and read it at runtime, or reference it through an encrypted parameter.
+  fix: |
+    environment { variables = { DB_SECRET_ARN = aws_secretsmanager_secret.db.arn } }
+  frameworks: {nist_800_53: [IA-5, SC-28], mitre_attack: [T1552.001]}
+
+- id: CG-EBS-001
+  title: EBS volume is not encrypted
+  severity: medium
+  category: data-protection
+  resource_types: [aws_ebs_volume]
+  description: The volume is created without encryption at rest; snapshots shared or leaked would expose the data.
+  when:
+    path: encrypted
+    not_equals: true
+  remediation: Set encrypted = true with a KMS key, and enable EBS encryption by default for the account.
+  fix: |
+    encrypted  = true
+    kms_key_id = aws_kms_key.data.arn
+  frameworks: {nist_800_53: [SC-28]}

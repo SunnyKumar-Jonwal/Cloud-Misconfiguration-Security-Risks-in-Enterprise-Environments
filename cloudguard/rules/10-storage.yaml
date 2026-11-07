@@ -1,0 +1,165 @@
+# Object storage exposure: S3 buckets and Azure Blob containers.
+
+- id: CG-S3-001
+  title: S3 bucket ACL grants public access
+  severity: critical
+  category: storage-exposure
+  resource_types: [aws_s3_bucket_acl]
+  description: A canned ACL of public-read, public-read-write or authenticated-read lets anyone (or any AWS account) list or read objects.
+  when:
+    path: acl
+    in: [public-read, public-read-write, authenticated-read]
+  remediation: Use the private ACL, or better, disable ACLs with object ownership "BucketOwnerEnforced" and grant access through bucket policies.
+  fix: |
+    acl = "private"
+  frameworks: {nist_800_53: [AC-3, AC-6, SC-7], mitre_attack: [T1530], csa_top_threats: [Misconfiguration and inadequate change control]}
+
+- id: CG-S3-002
+  title: S3 bucket has no public access block
+  severity: high
+  category: storage-exposure
+  resource_types: [aws_s3_bucket]
+  description: Without an S3 Block Public Access configuration, a later ACL or policy change can make the bucket public without any safety net.
+  when:
+    missing_related: {type: aws_s3_bucket_public_access_block, via: bucket}
+  remediation: Add an aws_s3_bucket_public_access_block with all four settings true (and enable Block Public Access at account level).
+  fix: |
+    resource "aws_s3_bucket_public_access_block" "this" {
+      bucket                  = aws_s3_bucket.this.id
+      block_public_acls       = true
+      block_public_policy     = true
+      ignore_public_acls      = true
+      restrict_public_buckets = true
+    }
+  frameworks: {nist_800_53: [AC-3, SC-7, CM-6], mitre_attack: [T1530]}
+
+- id: CG-S3-003
+  title: S3 public access block is only partly enabled
+  severity: high
+  category: storage-exposure
+  resource_types: [aws_s3_bucket_public_access_block]
+  description: One or more of the four Block Public Access settings is not enabled, leaving a path to public exposure.
+  when:
+    any:
+      - {path: block_public_acls, not_equals: true}
+      - {path: block_public_policy, not_equals: true}
+      - {path: ignore_public_acls, not_equals: true}
+      - {path: restrict_public_buckets, not_equals: true}
+  remediation: Set block_public_acls, block_public_policy, ignore_public_acls and restrict_public_buckets to true.
+  fix: |
+    block_public_acls       = true
+    block_public_policy     = true
+    ignore_public_acls      = true
+    restrict_public_buckets = true
+  frameworks: {nist_800_53: [AC-3, SC-7, CM-6], mitre_attack: [T1530]}
+
+- id: CG-S3-004
+  title: S3 bucket policy allows access to everyone
+  severity: critical
+  category: storage-exposure
+  resource_types: [aws_s3_bucket_policy]
+  description: A bucket policy statement allows Principal "*" without any condition, so anyone on the internet can perform the listed actions.
+  when:
+    statement:
+      path: policy
+      where: {effect: Allow, principal_public: true, has_condition: false}
+  remediation: Restrict the principal to specific accounts or roles, or add conditions (for example aws:SourceVpce or aws:PrincipalOrgID).
+  fix: |
+    Principal = { AWS = "arn:aws:iam::<account-id>:role/<reader-role>" }
+  frameworks: {nist_800_53: [AC-3, AC-6], mitre_attack: [T1530]}
+
+- id: CG-S3-005
+  title: S3 bucket has no default encryption configuration
+  severity: medium
+  category: data-protection
+  resource_types: [aws_s3_bucket]
+  description: No server-side encryption configuration is declared for the bucket. S3 now encrypts new objects with SSE-S3 by default, but a customer-managed KMS key is needed for key control, separation of duties and audit.
+  when:
+    missing_related: {type: aws_s3_bucket_server_side_encryption_configuration, via: bucket}
+  remediation: Declare server-side encryption with a customer-managed KMS key and enable bucket keys.
+  fix: |
+    resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
+      bucket = aws_s3_bucket.this.id
+      rule {
+        apply_server_side_encryption_by_default {
+          sse_algorithm     = "aws:kms"
+          kms_master_key_id = aws_kms_key.data.arn
+        }
+        bucket_key_enabled = true
+      }
+    }
+  frameworks: {nist_800_53: [SC-28, SC-12]}
+
+- id: CG-S3-006
+  title: S3 bucket has versioning disabled
+  severity: low
+  category: resilience
+  resource_types: [aws_s3_bucket]
+  description: Without versioning, deleted or overwritten objects (for example after a ransomware attack or an operator mistake) cannot be recovered.
+  when:
+    missing_related: {type: aws_s3_bucket_versioning, via: bucket}
+  remediation: Enable versioning, and consider Object Lock for backups and audit data.
+  fix: |
+    resource "aws_s3_bucket_versioning" "this" {
+      bucket = aws_s3_bucket.this.id
+      versioning_configuration { status = "Enabled" }
+    }
+  frameworks: {nist_800_53: [CP-9, SI-12], mitre_attack: [T1485]}
+
+- id: CG-AZ-ST-001
+  title: Azure blob container allows anonymous public access
+  severity: critical
+  category: storage-exposure
+  resource_types: [azurerm_storage_container]
+  description: A container access type of "blob" or "container" lets anyone read blobs (and, for "container", list them) without authentication.
+  when:
+    path: container_access_type
+    in: [blob, container]
+  remediation: Set container_access_type to "private" and use SAS tokens or Entra ID roles for access.
+  fix: |
+    container_access_type = "private"
+  frameworks: {nist_800_53: [AC-3, SC-7], mitre_attack: [T1530]}
+
+- id: CG-AZ-ST-002
+  title: Storage account does not disable public blob access
+  severity: high
+  category: storage-exposure
+  resource_types: [azurerm_storage_account]
+  description: allow_nested_items_to_be_public is not set to false, so any container in the account can be made public by a single setting.
+  when:
+    path: allow_nested_items_to_be_public
+    not_equals: false
+  remediation: Set allow_nested_items_to_be_public = false at account level.
+  fix: |
+    allow_nested_items_to_be_public = false
+  frameworks: {nist_800_53: [AC-3, CM-6], mitre_attack: [T1530]}
+
+- id: CG-AZ-ST-003
+  title: Storage account accepts TLS versions below 1.2
+  severity: medium
+  category: data-protection
+  resource_types: [azurerm_storage_account]
+  description: The account allows TLS 1.0 or 1.1, which are deprecated and weaker.
+  when:
+    all:
+      - {path: min_tls_version, exists: true}
+      - {path: min_tls_version, not_equals: TLS1_2}
+  remediation: Set min_tls_version = "TLS1_2".
+  fix: |
+    min_tls_version = "TLS1_2"
+  frameworks: {nist_800_53: [SC-8, SC-13]}
+
+- id: CG-AZ-ST-004
+  title: Storage account allows unencrypted HTTP traffic
+  severity: high
+  category: data-protection
+  resource_types: [azurerm_storage_account]
+  description: Secure transfer is disabled, so data can be sent over plain HTTP.
+  when:
+    any:
+      - {path: https_traffic_only_enabled, equals: false}
+      - {path: enable_https_traffic_only, equals: false}
+  remediation: Enable secure transfer (https_traffic_only_enabled = true).
+  fix: |
+    https_traffic_only_enabled = true
+  frameworks: {nist_800_53: [SC-8]}

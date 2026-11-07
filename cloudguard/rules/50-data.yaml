@@ -1,0 +1,103 @@
+# Managed databases and key management.
+
+- id: CG-RDS-001
+  title: RDS database is publicly accessible
+  severity: critical
+  category: network-exposure
+  resource_types: [aws_db_instance]
+  description: publicly_accessible = true gives the database a public endpoint.
+  when:
+    path: publicly_accessible
+    equals: true
+  remediation: Set publicly_accessible = false and keep the instance in private subnets.
+  fix: |
+    publicly_accessible = false
+  frameworks: {nist_800_53: [SC-7, AC-3], mitre_attack: [T1190]}
+
+- id: CG-RDS-002
+  title: RDS storage is not encrypted
+  severity: high
+  category: data-protection
+  resource_types: [aws_db_instance]
+  description: Database storage, automated backups and snapshots are not encrypted at rest.
+  when:
+    path: storage_encrypted
+    not_equals: true
+  remediation: Enable storage_encrypted with a customer-managed KMS key (requires creating a new encrypted instance and migrating).
+  fix: |
+    storage_encrypted = true
+    kms_key_id        = aws_kms_key.data.arn
+  frameworks: {nist_800_53: [SC-28, SC-12]}
+
+- id: CG-RDS-003
+  title: RDS automated backups are disabled or shorter than 7 days
+  severity: medium
+  category: resilience
+  resource_types: [aws_db_instance]
+  description: A backup retention period below 7 days limits recovery from corruption, deletion or ransomware.
+  when:
+    path: backup_retention_period
+    lt: 7
+  remediation: Set backup_retention_period to at least 7 (35 for critical data) and enable deletion protection.
+  fix: |
+    backup_retention_period = 14
+    deletion_protection     = true
+  frameworks: {nist_800_53: [CP-9], mitre_attack: [T1485, T1490]}
+
+- id: CG-KMS-001
+  title: KMS key rotation is disabled
+  severity: medium
+  category: data-protection
+  resource_types: [aws_kms_key]
+  description: Automatic yearly rotation of the key material is not enabled.
+  when:
+    path: enable_key_rotation
+    not_equals: true
+  remediation: Set enable_key_rotation = true.
+  fix: |
+    enable_key_rotation = true
+  frameworks: {nist_800_53: [SC-12]}
+
+- id: CG-AZ-SQL-001
+  title: Azure SQL firewall allows the entire internet
+  severity: critical
+  category: network-exposure
+  resource_types: [azurerm_mssql_firewall_rule, azurerm_sql_firewall_rule]
+  description: A firewall rule from 0.0.0.0 to 255.255.255.255 allows connections from any IP address.
+  when:
+    all:
+      - {path: start_ip_address, equals: 0.0.0.0}
+      - {path: end_ip_address, equals: 255.255.255.255}
+  remediation: Allow only specific client ranges, or use private endpoints and disable public network access.
+  fix: |
+    start_ip_address = "10.20.0.10"
+    end_ip_address   = "10.20.0.10"
+  frameworks: {nist_800_53: [SC-7, AC-3], mitre_attack: [T1190]}
+
+- id: CG-AZ-SQL-002
+  title: Azure SQL server allows public network access
+  severity: high
+  category: network-exposure
+  resource_types: [azurerm_mssql_server]
+  description: public_network_access_enabled is not set to false, so the server has a public endpoint.
+  when:
+    path: public_network_access_enabled
+    not_equals: false
+  remediation: Disable public network access and connect through private endpoints.
+  fix: |
+    public_network_access_enabled = false
+  frameworks: {nist_800_53: [SC-7]}
+
+- id: CG-AZ-KV-001
+  title: Key Vault purge protection is disabled
+  severity: medium
+  category: resilience
+  resource_types: [azurerm_key_vault]
+  description: Without purge protection, a malicious or mistaken purge permanently destroys keys and secrets, and the data they protect.
+  when:
+    path: purge_protection_enabled
+    not_equals: true
+  remediation: Set purge_protection_enabled = true (with soft delete).
+  fix: |
+    purge_protection_enabled = true
+  frameworks: {nist_800_53: [CP-9, SC-12], mitre_attack: [T1485]}
