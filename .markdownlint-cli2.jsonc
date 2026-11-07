@@ -1,0 +1,16 @@
+{
+  // Markdown style rules for the report sources and docs.
+  "config": {
+    "default": true,
+    // Paragraphs are written one sentence or idea per line; long lines are fine.
+    "MD013": false,
+    // Bold text is used for labels such as signature lines in the certificate.
+    "MD036": false,
+    // Repeated headings are fine as long as they are in different sections.
+    "MD024": { "siblings_only": true },
+    "MD004": { "style": "dash" },
+    "MD029": { "style": "ordered" }
+  },
+  // The PR template starts with "## Summary" because GitHub shows it inside the PR body.
+  "ignores": ["build/**", "dist/**", "node_modules/**", ".venv/**", ".github/pull_request_template.md"]
+}
