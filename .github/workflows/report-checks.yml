@@ -1,0 +1,141 @@
+name: Report checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      strict:
+        description: "Require a complete report (all chapters and preliminary pages)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: report-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  markdown-lint:
+    name: Markdown style
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Lint Markdown files
+        run: npx --yes markdownlint-cli2@0.23.3 "**/*.md"
+
+  structure:
+    name: Report structure and citations
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Check chapters, numbering, citations and placeholders
+        env:
+          # Release pull requests and manual runs must contain the complete report;
+          # feature branches only need to be internally consistent.
+          STRICT: ${{ startsWith(github.head_ref, 'release/') || (github.event_name == 'workflow_dispatch' && inputs.strict) }}
+        run: |
+          if [ "$STRICT" = "true" ]; then
+            python tools/check_report.py --strict
+          else
+            python tools/check_report.py
+          fi
+
+  tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt pytest
+      - name: Run test suite
+        run: python -m pytest -q
+
+  scanner:
+    name: CloudGuard scan of the example estates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Scan the vulnerable and hardened examples
+        run: |
+          mkdir -p build
+          if [ ! -d cloudguard ]; then
+            echo "CloudGuard is not on this branch yet; nothing to scan." | tee build/scan-summary.txt
+            exit 0
+          fi
+          # The vulnerable estate is expected to fail; the hardened estate must pass.
+          set +e
+          python -m cloudguard scan examples/acme-retail/vulnerable --format table | tee build/scan-vulnerable.txt
+          test "${PIPESTATUS[0]}" -eq 1
+          set -e
+          python -m cloudguard scan examples/acme-retail/vulnerable --format sarif --output build/cloudguard.sarif
+          python -m cloudguard scan examples/acme-retail/vulnerable --format html --output build/cloudguard-report.html
+          python -m cloudguard scan examples/acme-retail/hardened --format table --fail-on low | tee build/scan-hardened.txt
+          {
+            echo "### CloudGuard self-check"
+            echo ""
+            echo '```'
+            tail -n 3 build/scan-vulnerable.txt
+            tail -n 3 build/scan-hardened.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cloudguard-scan
+          path: build/
+          retention-days: 30
+
+  build:
+    name: Build DOCX and PDF
+    needs: [markdown-lint, structure, tests, scanner]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Install LibreOffice
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q --no-install-recommends libreoffice-writer fonts-liberation poppler-utils
+      - name: Build report
+        run: python tools/build_report.py --pdf
+      - name: Summarise the built report
+        run: |
+          pages=$(pdfinfo build/report.pdf | awk '/^Pages:/ {print $2}')
+          words=$(pdftotext build/report.pdf - | wc -w)
+          {
+            echo "### Built report"
+            echo ""
+            echo "| Pages | Words |"
+            echo "| ---: | ---: |"
+            echo "| $pages | $words |"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: report
+          path: |
+            build/report.docx
+            build/report.pdf
+          retention-days: 30
