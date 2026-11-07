@@ -87,9 +87,16 @@ jobs:
           python -m cloudguard scan examples/acme-retail/vulnerable --format table | tee build/scan-vulnerable.txt
           test "${PIPESTATUS[0]}" -eq 1
           set -e
-          python -m cloudguard scan examples/acme-retail/vulnerable --format sarif --output build/cloudguard.sarif
-          python -m cloudguard scan examples/acme-retail/vulnerable --format html --output build/cloudguard-report.html
+          python -m cloudguard scan examples/acme-retail/vulnerable --format sarif --output build/cloudguard.sarif --fail-on none
+          python -m cloudguard scan examples/acme-retail/vulnerable --format html --output build/cloudguard-report.html --fail-on none
           python -m cloudguard scan examples/acme-retail/hardened --format table --fail-on low | tee build/scan-hardened.txt
+          # The Capital One replay must produce an attack path; the drifted estate must report new findings.
+          set +e
+          python -m cloudguard paths examples/capital-one-replay | tee build/paths-capital-one.txt
+          test "${PIPESTATUS[0]}" -eq 1
+          python -m cloudguard drift examples/acme-retail/hardened examples/acme-retail/drifted --fail-on-drift | tee build/drift.txt
+          test "${PIPESTATUS[0]}" -eq 1
+          set -e
           {
             echo "### CloudGuard self-check"
             echo ""
