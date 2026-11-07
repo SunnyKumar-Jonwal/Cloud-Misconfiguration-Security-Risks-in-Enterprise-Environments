@@ -1,0 +1,50 @@
+# Managed Kubernetes control planes.
+
+- id: CG-EKS-001
+  title: EKS API endpoint is open to the whole internet
+  severity: high
+  category: network-exposure
+  resource_types: [aws_eks_cluster]
+  description: The Kubernetes API server is publicly reachable from any address. Leaked kubeconfig credentials or an API vulnerability can then be exploited from anywhere.
+  when:
+    all:
+      - {path: vpc_config.0.endpoint_public_access, not_equals: false}
+      - any:
+          - {path: vpc_config.0.public_access_cidrs, exists: false}
+          - {cidr_open: true, path: vpc_config.0.public_access_cidrs}
+  remediation: Disable the public endpoint, or restrict public_access_cidrs to known ranges.
+  fix: |
+    vpc_config {
+      endpoint_private_access = true
+      endpoint_public_access  = false
+    }
+  frameworks: {nist_800_53: [SC-7, AC-17], mitre_attack: [T1133]}
+
+- id: CG-AKS-001
+  title: AKS API server is reachable from any address
+  severity: high
+  category: network-exposure
+  resource_types: [azurerm_kubernetes_cluster]
+  description: The cluster is not private and no authorised IP ranges are set for the API server.
+  when:
+    all:
+      - {path: private_cluster_enabled, not_equals: true}
+      - {path: api_server_access_profile.0.authorized_ip_ranges, exists: false}
+  remediation: Use a private cluster, or set api_server_access_profile.authorized_ip_ranges.
+  fix: |
+    api_server_access_profile { authorized_ip_ranges = ["10.20.0.0/16"] }
+  frameworks: {nist_800_53: [SC-7, AC-17], mitre_attack: [T1133]}
+
+- id: CG-AKS-002
+  title: AKS cluster has Kubernetes RBAC disabled
+  severity: high
+  category: identity
+  resource_types: [azurerm_kubernetes_cluster]
+  description: Without RBAC, any authenticated user can perform any action in the cluster.
+  when:
+    path: role_based_access_control_enabled
+    equals: false
+  remediation: Enable RBAC and integrate with Entra ID.
+  fix: |
+    role_based_access_control_enabled = true
+  frameworks: {nist_800_53: [AC-3, AC-6], mitre_attack: [T1078.004]}

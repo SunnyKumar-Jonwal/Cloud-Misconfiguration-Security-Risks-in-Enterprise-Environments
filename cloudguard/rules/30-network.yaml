@@ -1,0 +1,83 @@
+# Network exposure: security groups and network security groups.
+
+- id: CG-NET-001
+  title: Security group allows SSH or RDP from the internet
+  severity: critical
+  category: network-exposure
+  resource_types: [aws_security_group]
+  description: An ingress rule opens port 22 or 3389 to 0.0.0.0/0, exposing administration services to brute force and exploitation.
+  when:
+    any_item:
+      path: ingress
+      where:
+        all:
+          - {cidr_open: true, path: cidr_blocks}
+          - {port_includes: [22, 3389]}
+  remediation: Remove internet access to admin ports; use AWS Systems Manager Session Manager, a bastion with MFA or a VPN, and restrict sources to known ranges.
+  fix: |
+    cidr_blocks = ["10.20.0.0/16"]   # corporate VPN range
+  frameworks: {nist_800_53: [SC-7, AC-17], mitre_attack: [T1133, T1190]}
+
+- id: CG-NET-002
+  title: Security group allows all ports from the internet
+  severity: high
+  category: network-exposure
+  resource_types: [aws_security_group]
+  description: An ingress rule opens every port (protocol -1 or 0-65535) to 0.0.0.0/0.
+  when:
+    any_item:
+      path: ingress
+      where:
+        all:
+          - {cidr_open: true, path: cidr_blocks}
+          - any:
+              - {path: protocol, equals: "-1"}
+              - all:
+                  - {path: from_port, lt: 1}
+                  - {path: to_port, gt: 65534}
+  remediation: Open only the ports the service needs, from the narrowest possible source range.
+  fix: |
+    from_port = 443
+    to_port   = 443
+    protocol  = "tcp"
+  frameworks: {nist_800_53: [SC-7], mitre_attack: [T1190]}
+
+- id: CG-NET-003
+  title: Security group exposes a database port to the internet
+  severity: critical
+  category: network-exposure
+  resource_types: [aws_security_group]
+  description: An ingress rule opens a common database or cache port (MySQL, PostgreSQL, SQL Server, Oracle, MongoDB, Redis, Elasticsearch) to 0.0.0.0/0.
+  when:
+    any_item:
+      path: ingress
+      where:
+        all:
+          - {cidr_open: true, path: cidr_blocks}
+          - {port_includes: [3306, 5432, 1433, 1521, 27017, 6379, 9200]}
+  remediation: Keep databases in private subnets and allow access only from application security groups.
+  fix: |
+    security_groups = [aws_security_group.app.id]
+  frameworks: {nist_800_53: [SC-7, AC-3], mitre_attack: [T1190, T1530]}
+
+- id: CG-AZ-NET-001
+  title: Network security group allows SSH, RDP or any port from the internet
+  severity: critical
+  category: network-exposure
+  resource_types: [azurerm_network_security_group, azurerm_network_security_rule]
+  description: An inbound Allow rule accepts traffic from any source (*, Internet or 0.0.0.0/0) to port 22, 3389 or all ports.
+  when:
+    any:
+      - any_item:
+          path: security_rule
+          where: &nsg_rule
+            all:
+              - {path: direction, equals: Inbound}
+              - {path: access, equals: Allow}
+              - {cidr_open: true, path: source_address_prefix}
+              - {path: destination_port_range, in: ["*", "22", "3389", "0-65535"]}
+      - *nsg_rule
+  remediation: Restrict the source to known address ranges, or use Azure Bastion / Just-in-Time VM access.
+  fix: |
+    source_address_prefix = "10.20.0.0/16"
+  frameworks: {nist_800_53: [SC-7, AC-17], mitre_attack: [T1133, T1190]}
