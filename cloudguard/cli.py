@@ -2,6 +2,8 @@
 
     python -m cloudguard scan PATH [--format table|json|sarif|html] [--output FILE]
                                    [--fail-on critical|high|medium|low|none] [--min-severity LEVEL]
+    python -m cloudguard paths PATH
+    python -m cloudguard drift BASELINE CURRENT [--fail-on-drift]
     python -m cloudguard rules
 
 ``scan`` exits with status 1 when a finding at or above ``--fail-on``
@@ -15,6 +17,8 @@ import sys
 from pathlib import Path
 
 from . import reporters
+from .attack_paths import find_paths
+from .drift import compare, explain
 from .engine import SEVERITY_ORDER, load_rules, scan
 from .loader import load
 
@@ -25,15 +29,18 @@ def cmd_scan(args) -> int:
     inventory = load(args.path)
     rules = load_rules()
     findings = scan(inventory, rules, args.min_severity)
+    paths = find_paths(inventory)
     target = str(args.path)
     if args.format == "table":
         text = reporters.to_table(findings, len(inventory), target, colour=not args.output and reporters.colour_enabled())
+        if paths:
+            text += f"\n{len(paths)} attack paths found; run 'python -m cloudguard paths {target}' for details"
     elif args.format == "json":
-        text = reporters.to_json(findings, len(inventory), target)
+        text = reporters.to_json(findings, len(inventory), target, paths)
     elif args.format == "sarif":
         text = reporters.to_sarif(findings, rules)
     else:
-        text = reporters.to_html(findings, len(inventory), target)
+        text = reporters.to_html(findings, len(inventory), target, paths)
     if args.output:
         Path(args.output).parent.mkdir(parents=True, exist_ok=True)
         Path(args.output).write_text(text + "\n", encoding="utf-8")
@@ -41,6 +48,18 @@ def cmd_scan(args) -> int:
     else:
         print(text)
     return 1 if reporters.exceeds(findings, args.fail_on) else 0
+
+
+def cmd_paths(args) -> int:
+    paths = find_paths(load(args.path))
+    print(reporters.paths_table(paths, colour=reporters.colour_enabled()))
+    return 1 if paths else 0
+
+
+def cmd_drift(args) -> int:
+    report = compare(load(args.baseline), load(args.current), load_rules())
+    print(reporters.drift_table(report, explain(report), colour=reporters.colour_enabled()))
+    return 1 if args.fail_on_drift and report.has_security_drift else 0
 
 
 def cmd_rules(args) -> int:
@@ -63,6 +82,16 @@ def build_parser() -> argparse.ArgumentParser:
                         help="exit with status 1 if a finding of this severity or higher exists (default: high)")
     p_scan.add_argument("--min-severity", choices=LEVELS, default="info", help="hide findings below this severity")
     p_scan.set_defaults(func=cmd_scan)
+
+    p_paths = sub.add_parser("paths", help="find chains of misconfigurations that form an attack path")
+    p_paths.add_argument("path", type=Path)
+    p_paths.set_defaults(func=cmd_paths)
+
+    p_drift = sub.add_parser("drift", help="compare an approved baseline with the current configuration")
+    p_drift.add_argument("baseline", type=Path)
+    p_drift.add_argument("current", type=Path)
+    p_drift.add_argument("--fail-on-drift", action="store_true", help="exit with status 1 if new findings appeared")
+    p_drift.set_defaults(func=cmd_drift)
 
     p_rules = sub.add_parser("rules", help="list the built-in rules")
     p_rules.set_defaults(func=cmd_rules)

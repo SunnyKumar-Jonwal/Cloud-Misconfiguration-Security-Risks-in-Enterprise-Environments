@@ -36,6 +36,54 @@ def severity_counts(findings: list[Finding]) -> dict[str, int]:
     return {s: counts.get(s, 0) for s in ("critical", "high", "medium", "low")}
 
 
+def paths_table(paths, colour: bool = False) -> str:
+    def paint(text, style):
+        return f"\033[{ANSI[style]}m{text}\033[0m" if colour else text
+
+    if not paths:
+        return paint("No attack paths found.", "green")
+    lines = []
+    for path in paths:
+        lines.append(paint(f"{path.id} {path.severity.upper()}  {path.title}", path.severity))
+        lines.append(paint(f"     pattern seen in: {path.pattern}", "grey"))
+        for n, step in enumerate(path.steps, 1):
+            where = f"  [{step.address}]" if step.address else ""
+            technique = f" ({step.technique})" if step.technique else ""
+            lines.append(f"     {n}. {step.description}{technique}" + paint(where, "grey"))
+        lines.append("")
+    lines.append(f"{len(paths)} attack paths")
+    return "\n".join(lines)
+
+
+def drift_table(report, explanation: dict, colour: bool = False) -> str:
+    def paint(text, style):
+        return f"\033[{ANSI[style]}m{text}\033[0m" if colour else text
+
+    lines = [paint("Configuration drift", "bold"),
+             f"  resources added: {len(report.added)}   removed: {len(report.removed)}   changed: {len(report.changed)}", ""]
+    for address in report.added:
+        lines.append(f"  + {address}")
+    for address in report.removed:
+        lines.append(f"  - {address}")
+    for change in report.changed:
+        lines.append(f"  ~ {change.address}: " + ", ".join(change.changed_paths))
+    lines.append("")
+    if report.new_findings:
+        lines.append(paint(f"New findings since the baseline ({len(report.new_findings)})", "bold"))
+        for f in report.new_findings:
+            cause = ", ".join(explanation.get(f"{f.rule.id} {f.address}", []))
+            lines.append(f"  {paint(f'{f.rule.severity.upper():<9}', f.rule.severity)} {f.rule.id:<14} {f.address}")
+            lines.append(paint(f"{'':<26}{f.rule.title}; caused by change to: {cause}", "grey"))
+    else:
+        lines.append(paint("No new findings since the baseline.", "green"))
+    if report.resolved_findings:
+        lines.append("")
+        lines.append(paint(f"Findings resolved since the baseline ({len(report.resolved_findings)})", "green"))
+        for f in report.resolved_findings:
+            lines.append(f"  {f.rule.id:<14} {f.address}")
+    return "\n".join(lines)
+
+
 def to_table(findings: list[Finding], resources: int, target: str, colour: bool = False) -> str:
     def paint(text, style):
         return f"\033[{ANSI[style]}m{text}\033[0m" if colour else text
@@ -56,10 +104,11 @@ def to_table(findings: list[Finding], resources: int, target: str, colour: bool 
     return "\n".join(lines)
 
 
-def to_json(findings: list[Finding], resources: int, target: str) -> str:
+def to_json(findings: list[Finding], resources: int, target: str, paths=()) -> str:
     return json.dumps({
         "target": target, "resources": resources, "summary": severity_counts(findings),
         "findings": [f.as_dict() | {"file": _relative(f.file)} for f in findings],
+        "attack_paths": [p.as_dict() for p in paths],
     }, indent=2)
 
 
@@ -115,7 +164,7 @@ code,pre{font-family:Consolas,"Liberation Mono",monospace;font-size:12px}pre{bac
 """
 
 
-def to_html(findings: list[Finding], resources: int, target: str) -> str:
+def to_html(findings: list[Finding], resources: int, target: str, paths=()) -> str:
     counts = severity_counts(findings)
     categories = Counter(f.rule.category for f in findings)
     e = html.escape
@@ -128,10 +177,22 @@ def to_html(findings: list[Finding], resources: int, target: str) -> str:
         "<div class='cards'>",
         f"<div class='card'><div class='label'>Resources</div><div class='value'>{resources}</div></div>",
         f"<div class='card'><div class='label'>Findings</div><div class='value'>{len(findings)}</div></div>",
+        f"<div class='card'><div class='label'>Attack paths</div><div class='value t-critical'>{len(paths)}</div></div>",
     ]
     for sev, n in counts.items():
         out.append(f"<div class='card'><div class='label'>{sev}</div><div class='value t-{sev}'>{n}</div></div>")
     out.append("</div>")
+    if paths:
+        out.append("<section><h2>Attack paths (chained misconfigurations)</h2>")
+        for path in paths:
+            out.append(f"<p><span class='sev {path.severity}'>{e(path.severity)}</span> <b>{e(path.id)}: {e(path.title)}</b>"
+                       f" <span class='muted'>&middot; pattern seen in {e(path.pattern)}</span></p><ol>")
+            for step in path.steps:
+                tech = f" <span class='muted'>({e(step.technique)})</span>" if step.technique else ""
+                where = f" <code>{e(step.address)}</code>" if step.address else ""
+                out.append(f"<li>{e(step.description)}{tech}{where}</li>")
+            out.append("</ol>")
+        out.append("</section>")
     if categories:
         out.append("<section><h2>Findings by category</h2><table><tr><th>Category</th><th>Findings</th></tr>")
         for cat, n in categories.most_common():
