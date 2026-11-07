@@ -1,0 +1,36 @@
+# Report details used on the cover page, certificate, declaration and
+# page headers. Edit the values here; do not hard-code them in chapters.
+
+title: "Security Risks of Cloud Misconfiguration in Enterprise Environments"
+subtitle: "A Breach Analysis and a Policy-as-Code Scanner for AWS and Azure Infrastructure as Code"
+report_type: "Project Report"
+submitted_for: "in partial fulfilment of the requirements of the HCL Project-Based Learning Programme"
+
+student:
+  name: "[Student Name]"
+  id: "[Enrolment / Registration No.]"
+  programme: "[Programme Name, e.g. B.Tech Computer Science and Engineering]"
+
+guide:
+  name: "[Project Guide Name]"
+  designation: "[Designation]"
+  organisation: "HCL Technologies Ltd."
+
+institute:
+  name: "[College / University Name]"
+  department: "[Department Name]"
+  city: "[City]"
+
+organisation: "HCL Technologies Ltd."
+academic_year: "2025 - 2026"
+submission_month: "November 2026"
+
+# Order of the preliminary pages (files in report/front-matter/).
+# "@toc" marks where the generated table of contents is inserted.
+front_matter:
+  - certificate.md
+  - declaration.md
+  - acknowledgement.md
+  - abstract.md
+  - "@toc"
+  - list-of-abbreviations.md
