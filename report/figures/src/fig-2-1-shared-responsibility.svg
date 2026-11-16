@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" font-family="Liberation Serif, Times New Roman, serif">
+<rect width="1200" height="640" fill="#fff"/>
+<text x="432.5" y="70" font-size="21" font-weight="bold" text-anchor="middle">On-premises</text>
+<rect x="334" y="94" width="197" height="54" rx="8" fill="#fde3c8" stroke="#b35900" stroke-width="1.5"/>
+<text x="432.5" y="127.0" font-size="17" text-anchor="middle">Customer</text>
+<rect x="334" y="156" width="197" height="54" rx="8" fill="#fde3c8" stroke="#b35900" stroke-width="1.5"/>
+<text x="432.5" y="189.0" font-size="17" text-anchor="middle">Customer</text>
+<rect x="334" y="218" width="197" height="54" rx="8" fill="#fde3c8" stroke="#b35900" stroke-width="1.5"/>
+<text x="432.5" y="251.0" font-size="17" text-anchor="middle">Customer</text>
+<rect x="334" y="280" width="197" height="54" rx="8" fill="#fde3c8" stroke="#b35900" stroke-width="1.5"/>
+<text x="432.5" y="313.0" font-size="17" text-anchor="middle">Customer</text>
+<rect x="334" y="342" width="197" height="54" rx="8" fill="#fde3c8" stroke="#b35900" stroke-width="1.5"/>
+<text x="432.5" y="375.0" font-size="17" text-anchor="middle">Customer</text>
+<rect x="334" y="404" width="197" height="54" rx="8" fill="#fde3c8" stroke="#b35900" stroke-width="1.5"/>
+<text x="432.5" y="437.0" font-size="17" text-anchor="middle">Customer</text>
+<rect x="334" y="466" width="197" height="54" rx="8" fill="#fde3c8" stroke="#b35900" stroke-width="1.5"/>
+<text x="432.5" y="499.0" font-size="17" text-anchor="middle">Customer</text>
+<text x="637.5" y="70" font-size="21" font-weight="bold" text-anchor="middle">IaaS</text>
+<rect x="539" y="94" width="197" height="54" rx="8" fill="#fde3c8" stroke="#b35900" stroke-width="1.5"/>
+<text x="637.5" y="127.0" font-size="17" text-anchor="middle">Customer</text>
+<rect x="539" y="156" width="197" height="54" rx="8" fill="#fde3c8" stroke="#b35900" stroke-width="1.5"/>
+<text x="637.5" y="189.0" font-size="17" text-anchor="middle">Customer</text>
+<rect x="539" y="218" width="197" height="54" rx="8" fill="#fde3c8" stroke="#b35900" stroke-width="1.5"/>
+<text x="637.5" y="251.0" font-size="17" text-anchor="middle">Customer</text>
+<rect x="539" y="280" width="197" height="54" rx="8" fill="#fde3c8" stroke="#b35900" stroke-width="1.5"/>
+<text x="637.5" y="313.0" font-size="17" text-anchor="middle">Customer</text>
+<rect x="539" y="342" width="197" height="54" rx="8" fill="#fde3c8" stroke="#b35900" stroke-width="1.5"/>
+<text x="637.5" y="375.0" font-size="17" text-anchor="middle">Customer</text>
+<rect x="539" y="404" width="197" height="54" rx="8" fill="#dbe8f8" stroke="#2f5d9e" stroke-width="1.5"/>
+<text x="637.5" y="437.0" font-size="17" text-anchor="middle">Provider</text>
+<rect x="539" y="466" width="197" height="54" rx="8" fill="#dbe8f8" stroke="#2f5d9e" stroke-width="1.5"/>
+<text x="637.5" y="499.0" font-size="17" text-anchor="middle">Provider</text>
+<text x="842.5" y="70" font-size="21" font-weight="bold" text-anchor="middle">PaaS</text>
+<rect x="744" y="94" width="197" height="54" rx="8" fill="#fde3c8" stroke="#b35900" stroke-width="1.5"/>
+<text x="842.5" y="127.0" font-size="17" text-anchor="middle">Customer</text>
+<rect x="744" y="156" width="197" height="54" rx="8" fill="#fde3c8" stroke="#b35900" stroke-width="1.5"/>
+<text x="842.5" y="189.0" font-size="17" text-anchor="middle">Customer</text>
+<rect x="744" y="218" width="197" height="54" rx="8" fill="#fde3c8" stroke="#b35900" stroke-width="1.5"/>
+<text x="842.5" y="251.0" font-size="17" text-anchor="middle">Customer</text>
+<rect x="744" y="280" width="197" height="54" rx="8" fill="#e9e1f5" stroke="#5b3f8c" stroke-width="1.5"/>
+<text x="842.5" y="313.0" font-size="17" text-anchor="middle">Shared</text>
+<rect x="744" y="342" width="197" height="54" rx="8" fill="#dbe8f8" stroke="#2f5d9e" stroke-width="1.5"/>
+<text x="842.5" y="375.0" font-size="17" text-anchor="middle">Provider</text>
+<rect x="744" y="404" width="197" height="54" rx="8" fill="#dbe8f8" stroke="#2f5d9e" stroke-width="1.5"/>
+<text x="842.5" y="437.0" font-size="17" text-anchor="middle">Provider</text>
+<rect x="744" y="466" width="197" height="54" rx="8" fill="#dbe8f8" stroke="#2f5d9e" stroke-width="1.5"/>
+<text x="842.5" y="499.0" font-size="17" text-anchor="middle">Provider</text>
+<text x="1047.5" y="70" font-size="21" font-weight="bold" text-anchor="middle">SaaS</text>
+<rect x="949" y="94" width="197" height="54" rx="8" fill="#fde3c8" stroke="#b35900" stroke-width="1.5"/>
+<text x="1047.5" y="127.0" font-size="17" text-anchor="middle">Customer</text>
+<rect x="949" y="156" width="197" height="54" rx="8" fill="#fde3c8" stroke="#b35900" stroke-width="1.5"/>
+<text x="1047.5" y="189.0" font-size="17" text-anchor="middle">Customer</text>
+<rect x="949" y="218" width="197" height="54" rx="8" fill="#e9e1f5" stroke="#5b3f8c" stroke-width="1.5"/>
+<text x="1047.5" y="251.0" font-size="17" text-anchor="middle">Shared</text>
+<rect x="949" y="280" width="197" height="54" rx="8" fill="#dbe8f8" stroke="#2f5d9e" stroke-width="1.5"/>
+<text x="1047.5" y="313.0" font-size="17" text-anchor="middle">Provider</text>
+<rect x="949" y="342" width="197" height="54" rx="8" fill="#dbe8f8" stroke="#2f5d9e" stroke-width="1.5"/>
+<text x="1047.5" y="375.0" font-size="17" text-anchor="middle">Provider</text>
+<rect x="949" y="404" width="197" height="54" rx="8" fill="#dbe8f8" stroke="#2f5d9e" stroke-width="1.5"/>
+<text x="1047.5" y="437.0" font-size="17" text-anchor="middle">Provider</text>
+<rect x="949" y="466" width="197" height="54" rx="8" fill="#dbe8f8" stroke="#2f5d9e" stroke-width="1.5"/>
+<text x="1047.5" y="499.0" font-size="17" text-anchor="middle">Provider</text>
+<text x="316" y="127.0" font-size="17" text-anchor="end">Data and its classification</text>
+<text x="316" y="189.0" font-size="17" text-anchor="end">Identities, access and keys</text>
+<text x="316" y="251.0" font-size="17" text-anchor="end">Application and service settings</text>
+<text x="316" y="313.0" font-size="17" text-anchor="end">Network controls</text>
+<text x="316" y="375.0" font-size="17" text-anchor="end">Operating system and runtime</text>
+<text x="316" y="437.0" font-size="17" text-anchor="end">Virtualisation</text>
+<text x="316" y="499.0" font-size="17" text-anchor="end">Physical hosts, network, data centre</text>
+<rect x="18" y="88" width="1136" height="190" rx="10" fill="none" stroke="#b3261e" stroke-width="3" stroke-dasharray="9 6"/>
+<text x="740" y="564" font-size="17" fill="#b3261e" text-anchor="middle">Dashed box: settings the customer always configures, in every model. Most breaches in Chapter 4 began here.</text>
+<rect x="330" y="599" width="26" height="18" fill="#fde3c8" stroke="#b35900"/><text x="364" y="614" font-size="16">Customer responsibility</text>
+<rect x="530" y="599" width="26" height="18" fill="#e9e1f5" stroke="#5b3f8c"/><text x="564" y="614" font-size="16">Shared responsibility</text>
+<rect x="730" y="599" width="26" height="18" fill="#dbe8f8" stroke="#2f5d9e"/><text x="764" y="614" font-size="16">Provider responsibility</text>
+</svg>
