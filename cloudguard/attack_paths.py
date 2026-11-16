@@ -197,7 +197,7 @@ def _database_paths(inv: Inventory) -> list[AttackPath]:
             hits = [port for lo, hi in _open_ingress_ports(sg) for port in DB_PORTS if lo <= port <= hi]
             if hits:
                 paths.append(AttackPath(
-                    "AP-4", f"Internet to database {db.address}", "critical", "Exposed databases (Section 3.5)", [
+                    "AP-4", f"Internet to database {db.address}", "critical", "SBI Quick (2019)", [
                         Step(f"Security group {sg.address} allows port {hits[0]} from 0.0.0.0/0", sg.address, "T1190"),
                         Step("The database has a public endpoint", db.address, "T1190"),
                         Step("Credential stuffing or an engine vulnerability gives direct access to the data", db.address,
