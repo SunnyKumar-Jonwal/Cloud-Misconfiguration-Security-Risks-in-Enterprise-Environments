@@ -99,3 +99,9 @@ def test_task_list_items_render_as_checkboxes():
     builder.render_blocks(build_report.parse_markdown("- [ ] open item\n- [x] done item\n"), None)
     texts = [p.text for p in builder.doc.paragraphs if p.text]
     assert texts == ["☐  open item", "☑  done item"]
+
+
+def test_rule_catalogue_appendix_matches_the_rules():
+    import generate_rule_catalogue
+
+    assert generate_rule_catalogue.main(["--check"]) == 0
