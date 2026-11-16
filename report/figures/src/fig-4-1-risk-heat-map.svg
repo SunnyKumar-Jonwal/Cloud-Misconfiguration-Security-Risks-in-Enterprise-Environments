@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="960" viewBox="0 0 1100 960" font-family="Liberation Serif, Times New Roman, serif">
+<rect width="1100" height="960" fill="#fff"/>
+<rect x="180" y="660" width="150" height="150" fill="#9ccc65" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="320" y="684" font-size="16" text-anchor="end" fill="#333">1</text>
+<rect x="330" y="660" width="150" height="150" fill="#9ccc65" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="470" y="684" font-size="16" text-anchor="end" fill="#333">2</text>
+<rect x="480" y="660" width="150" height="150" fill="#9ccc65" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="620" y="684" font-size="16" text-anchor="end" fill="#333">3</text>
+<rect x="630" y="660" width="150" height="150" fill="#9ccc65" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="770" y="684" font-size="16" text-anchor="end" fill="#333">4</text>
+<rect x="780" y="660" width="150" height="150" fill="#f6d55c" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="920" y="684" font-size="16" text-anchor="end" fill="#333">5</text>
+<rect x="180" y="510" width="150" height="150" fill="#9ccc65" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="320" y="534" font-size="16" text-anchor="end" fill="#333">2</text>
+<rect x="330" y="510" width="150" height="150" fill="#9ccc65" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="470" y="534" font-size="16" text-anchor="end" fill="#333">4</text>
+<rect x="480" y="510" width="150" height="150" fill="#f6d55c" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="620" y="534" font-size="16" text-anchor="end" fill="#333">6</text>
+<rect x="630" y="510" width="150" height="150" fill="#f6d55c" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="770" y="534" font-size="16" text-anchor="end" fill="#333">8</text>
+<rect x="780" y="510" width="150" height="150" fill="#ef8a3a" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="920" y="534" font-size="16" text-anchor="end" fill="#333">10</text>
+<circle cx="855.0" cy="585.0" r="18" fill="#fff" stroke="#222" stroke-width="2"/><text x="855.0" y="591.0" font-size="16" font-weight="bold" text-anchor="middle">R13</text>
+<rect x="180" y="360" width="150" height="150" fill="#9ccc65" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="320" y="384" font-size="16" text-anchor="end" fill="#333">3</text>
+<rect x="330" y="360" width="150" height="150" fill="#f6d55c" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="470" y="384" font-size="16" text-anchor="end" fill="#333">6</text>
+<rect x="480" y="360" width="150" height="150" fill="#f6d55c" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="620" y="384" font-size="16" text-anchor="end" fill="#333">9</text>
+<circle cx="555.0" cy="435.0" r="18" fill="#fff" stroke="#222" stroke-width="2"/><text x="555.0" y="441.0" font-size="16" font-weight="bold" text-anchor="middle">R8</text>
+<rect x="630" y="360" width="150" height="150" fill="#ef8a3a" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="770" y="384" font-size="16" text-anchor="end" fill="#333">12</text>
+<circle cx="705.0" cy="435.0" r="18" fill="#fff" stroke="#222" stroke-width="2"/><text x="705.0" y="441.0" font-size="16" font-weight="bold" text-anchor="middle">R10</text>
+<rect x="780" y="360" width="150" height="150" fill="#ef8a3a" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="920" y="384" font-size="16" text-anchor="end" fill="#333">15</text>
+<circle cx="855.0" cy="415.0" r="18" fill="#fff" stroke="#222" stroke-width="2"/><text x="855.0" y="421.0" font-size="16" font-weight="bold" text-anchor="middle">R5</text>
+<circle cx="855.0" cy="455.0" r="18" fill="#fff" stroke="#222" stroke-width="2"/><text x="855.0" y="461.0" font-size="16" font-weight="bold" text-anchor="middle">R6</text>
+<rect x="180" y="210" width="150" height="150" fill="#9ccc65" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="320" y="234" font-size="16" text-anchor="end" fill="#333">4</text>
+<rect x="330" y="210" width="150" height="150" fill="#f6d55c" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="470" y="234" font-size="16" text-anchor="end" fill="#333">8</text>
+<rect x="480" y="210" width="150" height="150" fill="#ef8a3a" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="620" y="234" font-size="16" text-anchor="end" fill="#333">12</text>
+<circle cx="555.0" cy="265.0" r="18" fill="#fff" stroke="#222" stroke-width="2"/><text x="555.0" y="271.0" font-size="16" font-weight="bold" text-anchor="middle">R7</text>
+<circle cx="555.0" cy="305.0" r="18" fill="#fff" stroke="#222" stroke-width="2"/><text x="555.0" y="311.0" font-size="16" font-weight="bold" text-anchor="middle">R9</text>
+<rect x="630" y="210" width="150" height="150" fill="#ef8a3a" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="770" y="234" font-size="16" text-anchor="end" fill="#333">16</text>
+<circle cx="705.0" cy="245.0" r="18" fill="#fff" stroke="#222" stroke-width="2"/><text x="705.0" y="251.0" font-size="16" font-weight="bold" text-anchor="middle">R2</text>
+<circle cx="705.0" cy="285.0" r="18" fill="#fff" stroke="#222" stroke-width="2"/><text x="705.0" y="291.0" font-size="16" font-weight="bold" text-anchor="middle">R4</text>
+<circle cx="705.0" cy="325.0" r="18" fill="#fff" stroke="#222" stroke-width="2"/><text x="705.0" y="331.0" font-size="16" font-weight="bold" text-anchor="middle">R12</text>
+<rect x="780" y="210" width="150" height="150" fill="#c62828" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="920" y="234" font-size="16" text-anchor="end" fill="#333">20</text>
+<circle cx="855.0" cy="245.0" r="18" fill="#fff" stroke="#222" stroke-width="2"/><text x="855.0" y="251.0" font-size="16" font-weight="bold" text-anchor="middle">R1</text>
+<circle cx="855.0" cy="285.0" r="18" fill="#fff" stroke="#222" stroke-width="2"/><text x="855.0" y="291.0" font-size="16" font-weight="bold" text-anchor="middle">R3</text>
+<circle cx="855.0" cy="325.0" r="18" fill="#fff" stroke="#222" stroke-width="2"/><text x="855.0" y="331.0" font-size="16" font-weight="bold" text-anchor="middle">R11</text>
+<rect x="180" y="60" width="150" height="150" fill="#f6d55c" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="320" y="84" font-size="16" text-anchor="end" fill="#333">5</text>
+<rect x="330" y="60" width="150" height="150" fill="#ef8a3a" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="470" y="84" font-size="16" text-anchor="end" fill="#333">10</text>
+<rect x="480" y="60" width="150" height="150" fill="#ef8a3a" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="620" y="84" font-size="16" text-anchor="end" fill="#333">15</text>
+<rect x="630" y="60" width="150" height="150" fill="#c62828" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="770" y="84" font-size="16" text-anchor="end" fill="#333">20</text>
+<rect x="780" y="60" width="150" height="150" fill="#c62828" fill-opacity="0.85" stroke="#fff" stroke-width="3"/>
+<text x="920" y="84" font-size="16" text-anchor="end" fill="#333">25</text>
+<text x="168" y="731.0" font-size="17" text-anchor="end">1</text><text x="168" y="753.0" font-size="15" text-anchor="end" font-style="italic">Rare</text>
+<text x="255.0" y="836" font-size="17" text-anchor="middle">1</text><text x="255.0" y="858" font-size="15" text-anchor="middle" font-style="italic">Negligible</text>
+<text x="168" y="581.0" font-size="17" text-anchor="end">2</text><text x="168" y="603.0" font-size="15" text-anchor="end" font-style="italic">Unlikely</text>
+<text x="405.0" y="836" font-size="17" text-anchor="middle">2</text><text x="405.0" y="858" font-size="15" text-anchor="middle" font-style="italic">Minor</text>
+<text x="168" y="431.0" font-size="17" text-anchor="end">3</text><text x="168" y="453.0" font-size="15" text-anchor="end" font-style="italic">Possible</text>
+<text x="555.0" y="836" font-size="17" text-anchor="middle">3</text><text x="555.0" y="858" font-size="15" text-anchor="middle" font-style="italic">Moderate</text>
+<text x="168" y="281.0" font-size="17" text-anchor="end">4</text><text x="168" y="303.0" font-size="15" text-anchor="end" font-style="italic">Likely</text>
+<text x="705.0" y="836" font-size="17" text-anchor="middle">4</text><text x="705.0" y="858" font-size="15" text-anchor="middle" font-style="italic">Major</text>
+<text x="168" y="131.0" font-size="17" text-anchor="end">5</text><text x="168" y="153.0" font-size="15" text-anchor="end" font-style="italic">Almost certain</text>
+<text x="855.0" y="836" font-size="17" text-anchor="middle">5</text><text x="855.0" y="858" font-size="15" text-anchor="middle" font-style="italic">Severe</text>
+<text x="555.0" y="895" font-size="20" font-weight="bold" text-anchor="middle">Impact</text>
+<text x="40" y="435.0" font-size="20" font-weight="bold" text-anchor="middle" transform="rotate(-90 40 435.0)">Likelihood</text>
+<rect x="180" y="925" width="24" height="18" fill="#9ccc65" fill-opacity="0.85"/><text x="212" y="940" font-size="16">Low (1-4)</text>
+<rect x="380" y="925" width="24" height="18" fill="#f6d55c" fill-opacity="0.85"/><text x="412" y="940" font-size="16">Medium (5-9)</text>
+<rect x="580" y="925" width="24" height="18" fill="#ef8a3a" fill-opacity="0.85"/><text x="612" y="940" font-size="16">High (10-19)</text>
+<rect x="780" y="925" width="24" height="18" fill="#c62828" fill-opacity="0.85"/><text x="812" y="940" font-size="16">Critical (20-25)</text>
+</svg>
