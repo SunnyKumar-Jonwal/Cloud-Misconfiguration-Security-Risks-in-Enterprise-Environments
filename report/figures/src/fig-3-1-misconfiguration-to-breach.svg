@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="490" viewBox="0 0 1200 490" font-family="Liberation Serif, Times New Roman, serif">
+<rect width="1200" height="490" fill="#fff"/>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#333"/></marker><marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2e7d32"/></marker></defs>
+<text x="600" y="40" font-size="21" font-weight="bold" text-anchor="middle">How a misconfiguration becomes a breach</text>
+<rect x="25" y="70" width="210" height="200" rx="12" fill="#fde3c8" stroke="#b35900" stroke-width="2.5"/>
+<circle cx="130.0" cy="110" r="22" fill="#b35900"/><text x="130.0" y="118" font-size="22" font-weight="bold" fill="#fff" text-anchor="middle">1</text>
+<text x="130.0" y="170" font-size="22" font-weight="bold" text-anchor="middle">Introduced</text>
+<text x="130.0" y="210" font-size="16" text-anchor="middle">console change, IaC</text>
+<text x="130.0" y="238" font-size="16" text-anchor="middle">default left unchanged</text>
+<line x1="237" y1="170.0" x2="260" y2="170.0" stroke="#333" stroke-width="3" marker-end="url(#a)"/>
+<line x1="130.0" y1="346" x2="130.0" y2="276" stroke="#2e7d32" stroke-width="2.5" marker-end="url(#g)"/>
+<rect x="25" y="350" width="210" height="80" rx="10" fill="#e3f2e6" stroke="#2e7d32" stroke-width="2"/>
+<text x="130.0" y="384" font-size="16" text-anchor="middle">IaC scan in PR</text>
+<text x="130.0" y="408" font-size="16" text-anchor="middle">guardrails</text>
+<rect x="262" y="70" width="210" height="200" rx="12" fill="#fdecea" stroke="#b3261e" stroke-width="2.5"/>
+<circle cx="367.0" cy="110" r="22" fill="#b3261e"/><text x="367.0" y="118" font-size="22" font-weight="bold" fill="#fff" text-anchor="middle">2</text>
+<text x="367.0" y="170" font-size="22" font-weight="bold" text-anchor="middle">Discovered</text>
+<text x="367.0" y="210" font-size="16" text-anchor="middle">internet-wide scanning</text>
+<text x="367.0" y="238" font-size="16" text-anchor="middle">leaked keys on GitHub</text>
+<line x1="474" y1="170.0" x2="497" y2="170.0" stroke="#333" stroke-width="3" marker-end="url(#a)"/>
+<line x1="367.0" y1="346" x2="367.0" y2="276" stroke="#2e7d32" stroke-width="2.5" marker-end="url(#g)"/>
+<rect x="262" y="350" width="210" height="80" rx="10" fill="#e3f2e6" stroke="#2e7d32" stroke-width="2"/>
+<text x="367.0" y="384" font-size="16" text-anchor="middle">CSPM</text>
+<text x="367.0" y="408" font-size="16" text-anchor="middle">external attack-surface scans</text>
+<rect x="499" y="70" width="210" height="200" rx="12" fill="#fdecea" stroke="#b3261e" stroke-width="2.5"/>
+<circle cx="604.0" cy="110" r="22" fill="#b3261e"/><text x="604.0" y="118" font-size="22" font-weight="bold" fill="#fff" text-anchor="middle">3</text>
+<text x="604.0" y="170" font-size="22" font-weight="bold" text-anchor="middle">Accessed</text>
+<text x="604.0" y="210" font-size="16" text-anchor="middle">anonymous read, SSRF</text>
+<text x="604.0" y="238" font-size="16" text-anchor="middle">stolen credentials</text>
+<line x1="711" y1="170.0" x2="734" y2="170.0" stroke="#333" stroke-width="3" marker-end="url(#a)"/>
+<line x1="604.0" y1="346" x2="604.0" y2="276" stroke="#2e7d32" stroke-width="2.5" marker-end="url(#g)"/>
+<rect x="499" y="350" width="210" height="80" rx="10" fill="#e3f2e6" stroke="#2e7d32" stroke-width="2"/>
+<text x="604.0" y="384" font-size="16" text-anchor="middle">Block Public Access</text>
+<text x="604.0" y="408" font-size="16" text-anchor="middle">IMDSv2, MFA</text>
+<rect x="736" y="70" width="210" height="200" rx="12" fill="#fdecea" stroke="#b3261e" stroke-width="2.5"/>
+<circle cx="841.0" cy="110" r="22" fill="#b3261e"/><text x="841.0" y="118" font-size="22" font-weight="bold" fill="#fff" text-anchor="middle">4</text>
+<text x="841.0" y="170" font-size="22" font-weight="bold" text-anchor="middle">Escalated</text>
+<text x="841.0" y="210" font-size="16" text-anchor="middle">over-privileged role</text>
+<text x="841.0" y="238" font-size="16" text-anchor="middle">no MFA, admin keys</text>
+<line x1="948" y1="170.0" x2="971" y2="170.0" stroke="#333" stroke-width="3" marker-end="url(#a)"/>
+<line x1="841.0" y1="346" x2="841.0" y2="276" stroke="#2e7d32" stroke-width="2.5" marker-end="url(#g)"/>
+<rect x="736" y="350" width="210" height="80" rx="10" fill="#e3f2e6" stroke="#2e7d32" stroke-width="2"/>
+<text x="841.0" y="384" font-size="16" text-anchor="middle">Least privilege</text>
+<text x="841.0" y="408" font-size="16" text-anchor="middle">scoped roles</text>
+<rect x="973" y="70" width="210" height="200" rx="12" fill="#fdecea" stroke="#b3261e" stroke-width="2.5"/>
+<circle cx="1078.0" cy="110" r="22" fill="#b3261e"/><text x="1078.0" y="118" font-size="22" font-weight="bold" fill="#fff" text-anchor="middle">5</text>
+<text x="1078.0" y="170" font-size="22" font-weight="bold" text-anchor="middle">Impact</text>
+<text x="1078.0" y="210" font-size="16" text-anchor="middle">data copied, ransom</text>
+<text x="1078.0" y="238" font-size="16" text-anchor="middle">logs off, unnoticed</text>
+<line x1="1078.0" y1="346" x2="1078.0" y2="276" stroke="#2e7d32" stroke-width="2.5" marker-end="url(#g)"/>
+<rect x="973" y="350" width="210" height="80" rx="10" fill="#e3f2e6" stroke="#2e7d32" stroke-width="2"/>
+<text x="1078.0" y="384" font-size="16" text-anchor="middle">Org-wide logging</text>
+<text x="1078.0" y="408" font-size="16" text-anchor="middle">threat detection</text>
+<text x="600" y="472" font-size="16" font-style="italic" fill="#2e7d32" text-anchor="middle">Green: the control that breaks the chain at each stage (Chapter 5)</text>
+</svg>
