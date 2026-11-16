@@ -104,7 +104,7 @@ Four Terraform configurations were written for the evaluation. All are fictional
 - **Drifted estate** (46 resources). The hardened estate after four unreviewed changes: emergency SSH from anywhere, a bucket policy and public access block loosened for a partner, IMDSv1 re-enabled for a legacy agent and CloudTrail logging switched off.
 - **Capital One replay** (9 resources). A reconstruction of the configuration pattern publicly reported for the 2019 breach [21], with illustrative names.
 
-The prototype was tested at three levels: 104 automated tests (an "it fires" and an "it stays silent" test for each rule, plus tests for the loader, reporters, attack paths, drift and command-line exit codes); runs on the four configurations; and a comparison with Checkov 3.4.3 [18], a widely used open-source IaC scanner, on the same files. The comparison is produced by `tools/compare_with_checkov.py`, so it can be repeated with any Checkov version.
+The prototype was tested at three levels: 105 automated tests (an "it fires" and an "it stays silent" test for each rule, plus tests for the loader, reporters, attack paths, drift, command-line exit codes and the generated rule catalogue); runs on the four configurations; and a comparison with Checkov 3.4.3 [18], a widely used open-source IaC scanner, on the same files. The comparison is produced by `tools/compare_with_checkov.py`, so it can be repeated with any Checkov version.
 
 ## 6.7 Results
 
@@ -121,7 +121,9 @@ Table 6.3: CloudGuard results on the four test configurations
 | Drifted | 46 | 5 | 2 | 3 | 0 | 0 | 1 |
 | Capital One replay | 9 | 12 | 0 | 5 | 4 | 3 | 1 |
 
-Every planted misconfiguration in the vulnerable estate was reported, and the hardened estate produced no findings. The largest class was network exposure (12 findings), followed by identity (7), storage exposure (6) and data protection (6). Ten findings were in the Azure part of the estate and thirty in the AWS part.
+Every planted misconfiguration in the vulnerable estate was reported, and the hardened estate produced no findings. The largest class was network exposure (12 findings), followed by identity (7), storage exposure (6) and data protection (6). Ten findings were in the Azure part of the estate and thirty in the AWS part. Figure 6.2 shows the actual scan output; the hardened scan is in Appendix C.
+
+![Figure 6.2: CloudGuard scan of the vulnerable Acme Retail estate (python -m cloudguard scan)](../docs/screenshots/02-scan-vulnerable.png)
 
 ### 6.7.2 Attack Paths
 
@@ -135,17 +137,21 @@ Table 6.4: Attack paths reported by CloudGuard
 | Vulnerable | AP-2 | Customer-export bucket readable by anyone through its ACL and bucket policy | Verizon/NICE 2017, Pegasus 2022 |
 | Vulnerable | AP-2 | Invoice Blob container listable by anyone | BlueBleed 2022 |
 | Vulnerable | AP-3 | Static access key of a CI user with AdministratorAccess | Tesla 2018, Toyota 2022 |
-| Vulnerable | AP-4 | MySQL open to 0.0.0.0/0 in front of a publicly accessible RDS database | Exposed databases |
+| Vulnerable | AP-4 | MySQL open to 0.0.0.0/0 in front of a publicly accessible RDS database | SBI Quick 2019 |
 | Drifted | AP-2 | Customer-export bucket made public by the drifted bucket policy | Drift after review |
 | Capital One replay | AP-1 | Public WAF instance, IMDSv1, role with S3 read on `*`, two sensitive buckets (the public web-assets bucket is correctly excluded) | Capital One 2019 |
 
-The Capital One replay illustrates why attack paths matter. Taken one by one, its worst findings are only *high*: IMDSv1, a broad S3 policy, buckets without public access blocks. No single rule calls the configuration critical. Linked together, the same findings form the chain that led to one of the largest cloud breaches on record. A test in the suite confirms that fixing any one link (requiring IMDSv2, removing the public IP or scoping the role to one bucket) breaks the path.
+The Capital One replay illustrates why attack paths matter. Taken one by one, its worst findings are only *high*: IMDSv1, a broad S3 policy, buckets without public access blocks. No single rule calls the configuration critical. Linked together, the same findings form the chain that led to one of the largest cloud breaches on record. A test in the suite confirms that fixing any one link (requiring IMDSv2, removing the public IP or scoping the role to one bucket) breaks the path. Figure 6.3 shows the path as reported.
+
+![Figure 6.3: The Capital One attack path reported by python -m cloudguard paths](../docs/screenshots/05-attack-path-capital-one.png)
 
 The drifted estate shows the opposite effect. IMDSv1 was re-enabled on the web instance, but no AP-1 path appears, because the instance is still private and its role is still scoped to one prefix. The other layers of the hardened design contained the drift.
 
 ### 6.7.3 Drift Detection
 
-Comparing the hardened baseline with the drifted estate, CloudGuard reported no added or removed resources, five changed resources and five new findings. Each was attributed to the attribute that caused it, as shown in Table 6.5.
+Comparing the hardened baseline with the drifted estate, CloudGuard reported no added or removed resources, five changed resources and five new findings. Each was attributed to the attribute that caused it, as shown in Table 6.5 and Figure 6.4.
+
+![Figure 6.4: Drift report comparing the hardened baseline with the drifted estate](../docs/screenshots/06-drift.png)
 
 Table 6.5: New findings in the drifted estate and the changes that caused them
 
@@ -159,7 +165,7 @@ Table 6.5: New findings in the drifted estate and the changes that caused them
 
 ### 6.7.4 Comparison with Checkov
 
-Checkov evaluated 154 distinct checks on the vulnerable estate and reported 126 failures, against CloudGuard's 39 rules and 40 findings. For each CloudGuard finding, the comparison script looked for the Checkov check that tests the same issue. Table 6.6 summarises the outcome; the full table is in `evaluation/checkov-comparison.md` in the repository.
+Checkov evaluated 154 distinct checks on the vulnerable estate and reported 126 failures, against CloudGuard's 39 rules and 40 findings. For each CloudGuard finding, the comparison script looked for the Checkov check that tests the same issue. Table 6.6 summarises the outcome, and Figure 6.5 shows the comparison script's output for the issues Checkov did not detect. The full table is in `evaluation/checkov-comparison.md` in the repository.
 
 Table 6.6: Did Checkov flag the issues CloudGuard found on the vulnerable estate?
 
@@ -168,6 +174,8 @@ Table 6.6: Did Checkov flag the issues CloudGuard found on the vulnerable estate
 | Checkov detected the same issue | 35 of 40 | Public storage, IAM, open SSH/RDP, IMDSv1, encryption, logging, Kubernetes exposure and others |
 | Checkov's check ran and passed (missed) | 4 | MySQL port 3306 open to 0.0.0.0/0 (no default check for database ports); password in EC2 user data (`CKV_AWS_46`); token in Lambda environment (`CKV_AWS_45`); storage account with secure transfer disabled (`CKV_AZURE_3` reads the older attribute name `enable_https_traffic_only`, while azurerm 4.x uses `https_traffic_only_enabled`) |
 | Only a related check | 1 | The static access key: Checkov flags the IAM user (`CKV_AWS_273`), not the key itself |
+
+![Figure 6.5: Output of tools/compare_with_checkov.py, filtered to the totals and the issues Checkov missed](../docs/screenshots/09-checkov-comparison.png)
 
 The comparison cuts both ways. Checkov missed four issues that CloudGuard caught, two of them high-severity hard-coded secrets and one critical network exposure. But Checkov's much larger library also reports many issues that CloudGuard does not check at all. On the *hardened* estate, where CloudGuard reports nothing, Checkov still reports 72 failures. Some are best-practice items (lifecycle rules, Multi-AZ, X-Ray tracing), but others are real security gaps outside CloudGuard's rule set, such as S3 access logging, CloudTrail encryption with a customer-managed key, EKS secrets encryption and control-plane logging, and SQL auditing. Neither tool links findings into attack paths the way CloudGuard's analyser does: none of the 32 Checkov failures on the Capital One replay describes the chain as a whole.
 
