@@ -694,7 +694,8 @@ class ReportBuilder:
         for c in range(columns):
             cells = [row[c] if c < len(row) else "" for row in rows]
             words = [len(w.strip("*`")) for cell in cells for w in cell.split()] or [1]
-            minimum.append(max(words) * per_char + padding)
+            # very long identifiers may wrap, so they do not squeeze every other column
+            minimum.append(min(max(words), 24) * per_char + padding)
             desired.append(min(max(len(cell) for cell in cells), 70) * per_char * 0.8 + padding)
         if sum(minimum) >= total_inches:
             widths = [m * total_inches / sum(minimum) for m in minimum]
